@@ -1,12 +1,14 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { EaCManageCloudForm } from "@fathym/atomic";
-import { EverythingAsCodeState } from "../../../../src/eac/EverythingAsCodeState.ts";
-import { FathymEaC } from "../../../../src/FathymEaC.ts";
-import { EaCCloudAzureDetails } from "../../../../src/eac/modules/clouds/EaCCloudAzureDetails.ts";
-import { loadEaCSvc } from "../../../../configs/eac.ts";
-import { waitForStatus } from "../../../../src/utils/eac/waitForStatus.ts";
-import { EaCStatusProcessingTypes } from "../../../../src/api/models/EaCStatusProcessingTypes.ts";
 import { redirectRequest } from "@fathym/common";
+import { EaCCloudAzureDetails } from "@fathym/eac";
+import {
+  EaCStatusProcessingTypes,
+  FathymEaC,
+  loadEaCSvc,
+  waitForStatus,
+} from "@fathym/eac/api";
+import { EverythingAsCodeState } from "../../../../src/eac/EverythingAsCodeState.ts";
 
 type AzurePageData = {};
 
@@ -51,7 +53,7 @@ export const handler: Handlers<AzurePageData, EverythingAsCodeState> = {
     );
 
     if (status.Processing == EaCStatusProcessingTypes.COMPLETE) {
-      return redirectRequest("/dashboard");
+      return redirectRequest("/dashboard", false, false);
     } else {
       return redirectRequest(
         `/dashboard?error=${
@@ -59,6 +61,8 @@ export const handler: Handlers<AzurePageData, EverythingAsCodeState> = {
             status.Messages["Error"] as string,
           )
         }&commitId=${commitResp.CommitID}`,
+        false,
+        false,
       );
     }
   },

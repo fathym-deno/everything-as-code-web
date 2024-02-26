@@ -2,17 +2,14 @@
 import { Handlers } from "$fresh/server.ts";
 import { gitHubOAuth } from "../../../../../configs/oAuth.config.ts";
 import { fathymDenoKv } from "../../../../../configs/deno-kv.config.ts";
-import { UserOAuthConnection } from "../../../../../src/oauth/UserOAuthConnection.ts";
 import { EverythingAsCodeState } from "../../../../../src/eac/EverythingAsCodeState.ts";
-import { loadJwtConfig } from "../../../../../configs/jwt.config.ts";
+import { loadJwtConfig, UserOAuthConnection } from "@fathym/eac";
 
 export const handler: Handlers<any, EverythingAsCodeState> = {
   async GET(req, ctx) {
     const now = Date.now();
 
-    const { response, tokens } = await gitHubOAuth.handleCallback(
-      req,
-    );
+    const { response, tokens } = await gitHubOAuth.handleCallback(req);
 
     const { accessToken, refreshToken, expiresIn } = tokens;
 

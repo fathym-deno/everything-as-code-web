@@ -1,21 +1,20 @@
-import { getCookies, setCookie } from "$std/http/cookie.ts";
-import { MiddlewareHandlerContext } from "$fresh/server.ts";
+import { FreshContext } from "$fresh/server.ts";
+import { loadJwtConfig, UserOAuthConnection } from "@fathym/eac";
 import { fathymDenoKv } from "../configs/deno-kv.config.ts";
 import { redirectRequest } from "@fathym/common";
-import { UserOAuthConnection } from "../src/oauth/UserOAuthConnection.ts";
 import { azureFathymOAuth } from "../configs/oAuth.config.ts";
-import { EaCSourceConnectionDetails } from "../src/eac/modules/sources/EaCSourceConnectionDetails.ts";
-import { loadMainOctokit } from "../src/services/github/octokit/load.ts";
-import { getCurrentAzureUser } from "./api/eac/handlers/clouds/helpers.ts";
-import { loadJwtConfig } from "../configs/jwt.config.ts";
 
-async function loggedInCheck(req: Request, ctx: MiddlewareHandlerContext) {
+async function loggedInCheck(req: Request, ctx: FreshContext) {
   const url = new URL(req.url);
 
   const { origin, pathname, search, searchParams } = url;
 
   if (origin.endsWith("ngrok-free.app")) {
-    return redirectRequest(`http://localhost:5437${pathname}${search}`);
+    return redirectRequest(
+      `http://localhost:5437${pathname}${search}`,
+      false,
+      false,
+    );
   }
 
   if (pathname.startsWith("/dashboard")) {

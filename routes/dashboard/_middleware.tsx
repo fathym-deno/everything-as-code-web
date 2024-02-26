@@ -1,17 +1,17 @@
-import { MiddlewareHandlerContext } from "$fresh/server.ts";
+import { FreshContext } from "$fresh/server.ts";
 import { cookieSession } from "$fresh/session";
 import { redirectRequest } from "@fathym/common";
 import { fathymDenoKv } from "../../configs/deno-kv.config.ts";
 import { azureFathymOAuth } from "../../configs/oAuth.config.ts";
 import { EverythingAsCodeState } from "../../src/eac/EverythingAsCodeState.ts";
-import { loadEaCSvc } from "../../configs/eac.ts";
 import {
+  EverythingAsCode,
   UserOAuthConnection,
   userOAuthConnExpired,
-} from "../../src/oauth/UserOAuthConnection.ts";
-import { EverythingAsCode } from "../../src/eac/EverythingAsCode.ts";
+} from "@fathym/eac";
+import { loadEaCSvc } from "@fathym/eac/api";
 
-async function loggedInCheck(req: Request, ctx: MiddlewareHandlerContext) {
+async function loggedInCheck(req: Request, ctx: FreshContext) {
   const url = new URL(req.url);
 
   const { pathname, search } = url;
@@ -48,7 +48,7 @@ async function loggedInCheck(req: Request, ctx: MiddlewareHandlerContext) {
 
 async function currentEaC(
   req: Request,
-  ctx: MiddlewareHandlerContext<EverythingAsCodeState>,
+  ctx: FreshContext<EverythingAsCodeState>,
 ) {
   const currentEaC = await fathymDenoKv.get<string>([
     "User",
@@ -90,7 +90,7 @@ async function currentEaC(
 
 async function currentState(
   req: Request,
-  ctx: MiddlewareHandlerContext<EverythingAsCodeState>,
+  ctx: FreshContext<EverythingAsCodeState>,
 ) {
   const state: EverythingAsCodeState = {
     ...ctx.state,
@@ -136,7 +136,7 @@ const session = cookieSession();
 
 function userSession(
   req: Request,
-  ctx: MiddlewareHandlerContext<EverythingAsCodeState>,
+  ctx: FreshContext<EverythingAsCodeState>,
 ) {
   return session(req, ctx);
 }

@@ -1,15 +1,13 @@
-import { defineConfig, FreshContext } from "$fresh/server.ts";
+import { defineConfig, FreshContext, Plugin } from "$fresh/server.ts";
 import tailwind from "$fresh/plugins/tailwind.ts";
 import { iconSetPlugin } from "@fathym/atomic-icons";
+import { loadEaCSvc, waitForStatus } from "@fathym/eac/api";
+import { gitHubAccessPlugin } from "@fathym/eac/fresh";
 import { curIconSetGenerateConfig } from "./configs/fathym-atomic-icons.config.ts";
 // import { msalPlugin } from "@fathym/msal";
 // import { msalPluginConfig } from "./configs/msal.config.ts";
 import { gitHubOAuth } from "./configs/oAuth.config.ts";
-import { gitHubAccessPlugin } from "./src/plugins/github/access/github-access.plugin.ts";
 import { fathymDenoKv } from "./configs/deno-kv.config.ts";
-import { loadEaCSvc } from "./configs/eac.ts";
-import { GitHubAccessPluginState } from "./src/plugins/github/access/GitHubAccessPluginState.ts";
-import { EverythingAsCodeState } from "./src/eac/EverythingAsCodeState.ts";
 
 export default defineConfig({
   plugins: [
@@ -19,14 +17,33 @@ export default defineConfig({
     gitHubAccessPlugin({
       DenoKV: fathymDenoKv,
       Handlers: gitHubOAuth,
-      LoadEaCSvc: async (ctx: FreshContext<EverythingAsCodeState>) => {
-        return await loadEaCSvc(
+      ProcessSrcConnDetails: async (ctx, srcConnLookup, srcConnDetails) => {
+        const eacSvc = await loadEaCSvc(
           ctx.state.EaC!.EnterpriseLookup!,
           ctx.state.Username!,
         );
+
+        const commitResp = await eacSvc.Commit(
+          {
+            EnterpriseLookup: ctx.state.EaC!.EnterpriseLookup!,
+            SourceConnections: {
+              [srcConnLookup]: {
+                Details: srcConnDetails,
+                GitHubAppLookup: Deno.env.get("GITHUB_APP_ID"),
+              },
+            },
+          },
+          60,
+        );
+
+        await waitForStatus(
+          eacSvc,
+          commitResp.EnterpriseLookup,
+          commitResp.CommitID,
+        );
       },
       RootPath: "/dashboard/github/access",
-    }),
+    }) as Plugin,
   ],
   server: {
     port: 5437,

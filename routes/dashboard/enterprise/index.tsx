@@ -1,25 +1,18 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
+import { EaCManageForm } from "@fathym/atomic";
+import { redirectRequest, respond } from "@fathym/common";
 import {
-  Action,
-  ActionGroup,
-  ActionStyleTypes,
-  EaCManageForm,
-} from "@fathym/atomic";
-import { BeginIcon, DeleteIcon } from "$fathym/atomic-icons";
-import { UserEaCRecord } from "../../../src/api/UserEaCRecord.ts";
-import { EverythingAsCodeState } from "../../../src/eac/EverythingAsCodeState.ts";
-import { loadEaCSvc } from "../../../configs/eac.ts";
-import { FathymEaC } from "../../../src/FathymEaC.ts";
-import {
+  EaCStatusProcessingTypes,
+  FathymEaC,
+  loadEaCSvc,
+  UserEaCRecord,
   waitForStatus,
   waitForStatusWithFreshJwt,
-} from "../../../src/utils/eac/waitForStatus.ts";
-import { EaCStatusProcessingTypes } from "../../../src/api/models/EaCStatusProcessingTypes.ts";
-import { denoKv, fathymDenoKv } from "../../../configs/deno-kv.config.ts";
-import { redirectRequest, respond } from "@fathym/common";
+} from "@fathym/eac/api";
+import { EverythingAsCodeState } from "../../../src/eac/EverythingAsCodeState.ts";
+import { fathymDenoKv } from "../../../configs/deno-kv.config.ts";
 import { EntepriseManagementItem } from "../../../islands/EntepriseManagementItem.tsx";
-import { EaCStatus } from "../../../src/api/models/EaCStatus.ts";
-import { EverythingAsCode } from "../../../src/eac/EverythingAsCode.ts";
+import { EverythingAsCode } from "@fathym/eac";
 
 type EnterprisePageData = {
   currentEaC?: FathymEaC;
@@ -77,7 +70,7 @@ export const handler: Handlers<EnterprisePageData, EverythingAsCodeState> = {
         createResp.EnterpriseLookup,
       );
 
-      return redirectRequest("/dashboard");
+      return redirectRequest("/dashboard", false, false);
     } else {
       return redirectRequest(
         `/dashboard?error=${
@@ -85,6 +78,8 @@ export const handler: Handlers<EnterprisePageData, EverythingAsCodeState> = {
             status.Messages["Error"] as string,
           )
         }&commitId=${createResp.CommitID}`,
+        false,
+        false,
       );
     }
   },

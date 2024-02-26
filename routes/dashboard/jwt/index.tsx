@@ -1,5 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { loadJwtConfig } from "../../../configs/jwt.config.ts";
+import { loadJwtConfig } from "@fathym/eac";
 import { EverythingAsCodeState } from "../../../src/eac/EverythingAsCodeState.ts";
 
 interface JWTPageData {

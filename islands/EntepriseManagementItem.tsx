@@ -4,10 +4,12 @@ import { Action } from "@fathym/atomic";
 import { ActionStyleTypes } from "@fathym/atomic";
 import { BeginIcon } from "$fathym/atomic-icons";
 import { DeleteIcon } from "$fathym/atomic-icons";
-import { UserEaCRecord } from "../src/api/UserEaCRecord.ts";
 import { JSX, Ref } from "preact";
-import { EaCStatus } from "../src/api/models/EaCStatus.ts";
-import { EaCStatusProcessingTypes } from "../src/api/models/EaCStatusProcessingTypes.ts";
+import {
+  EaCStatus,
+  EaCStatusProcessingTypes,
+  UserEaCRecord,
+} from "@fathym/eac/api";
 
 export type EntepriseManagementItemProps = {
   active: boolean;

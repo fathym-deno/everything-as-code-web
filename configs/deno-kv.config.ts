@@ -1,6 +1,5 @@
-import { initializeDenoKv } from "../src/utils/deno-kv/initializeDenoKv.ts";
-
 import "$std/dotenv/load.ts";
+import { initializeDenoKv } from "@fathym/eac";
 
 export const denoKv = await initializeDenoKv(
   Deno.env.get("DENO_KV_PATH") || undefined,

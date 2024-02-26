@@ -1,12 +1,14 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { Action, ActionGroup, Input } from "@fathym/atomic";
-import { EverythingAsCodeState } from "../../../src/eac/EverythingAsCodeState.ts";
-import { EaCGitHubAppDetails } from "../../../src/eac/modules/github/EaCGitHubAppDetails.ts";
 import { redirectRequest } from "@fathym/common";
-import { loadEaCSvc } from "../../../configs/eac.ts";
-import { waitForStatus } from "../../../src/utils/eac/waitForStatus.ts";
-import { FathymEaC } from "../../../src/FathymEaC.ts";
-import { EaCStatusProcessingTypes } from "../../../src/api/models/EaCStatusProcessingTypes.ts";
+import { EaCGitHubAppDetails } from "@fathym/eac";
+import {
+  EaCStatusProcessingTypes,
+  FathymEaC,
+  loadEaCSvc,
+  waitForStatus,
+} from "@fathym/eac/api";
+import { EverythingAsCodeState } from "../../../src/eac/EverythingAsCodeState.ts";
 
 interface GitHubAppPageData {
   details?: EaCGitHubAppDetails;
@@ -72,7 +74,7 @@ export const handler: Handlers<
     );
 
     if (status.Processing === EaCStatusProcessingTypes.COMPLETE) {
-      return redirectRequest("/dashboard");
+      return redirectRequest("/dashboard", false, false);
     } else {
       return redirectRequest(
         `/dashboard?error=${
@@ -80,6 +82,8 @@ export const handler: Handlers<
             status.Messages["Error"] as string,
           )
         }&commitId=${commitResp.CommitID}`,
+        false,
+        false,
       );
     }
   },

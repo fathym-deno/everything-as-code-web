@@ -1,5 +1,5 @@
 import { WithSession } from "$fresh/session";
-import { FathymEaC } from "../FathymEaC.ts";
+import { FathymEaC } from "@fathym/eac/api";
 
 export type EverythingAsCodeState =
   & {

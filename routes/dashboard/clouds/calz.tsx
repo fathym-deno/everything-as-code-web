@@ -1,15 +1,20 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { CloudCALZForm } from "@fathym/atomic";
-import { Location } from "npm:@azure/arm-subscriptions";
 import { mergeWithArrays, redirectRequest } from "@fathym/common";
+import {
+  EaCCloudAzureDetails,
+  EaCCloudResourceFormatDetails,
+} from "@fathym/eac";
+import {
+  EaCServiceDefinitions,
+  EaCStatusProcessingTypes,
+  FathymEaC,
+  loadEaCAzureSvc,
+  loadEaCSvc,
+  waitForStatus,
+} from "@fathym/eac/api";
+import { Location } from "npm:@azure/arm-subscriptions";
 import { EverythingAsCodeState } from "../../../src/eac/EverythingAsCodeState.ts";
-import { EaCServiceDefinitions } from "../../../src/api/models/EaCServiceDefinitions.ts";
-import { loadEaCAzureSvc, loadEaCSvc } from "../../../configs/eac.ts";
-import { FathymEaC } from "../../../src/FathymEaC.ts";
-import { EaCCloudResourceFormatDetails } from "../../../src/eac/modules/clouds/EaCCloudResourceFormatDetails.ts";
-import { waitForStatus } from "../../../src/utils/eac/waitForStatus.ts";
-import { EaCStatusProcessingTypes } from "../../../src/api/models/EaCStatusProcessingTypes.ts";
-import { EaCCloudAzureDetails } from "../../../src/eac/modules/clouds/EaCCloudAzureDetails.ts";
 
 interface CALZPageData {
   cloudLookup?: string;
@@ -143,7 +148,7 @@ export const handler: Handlers<CALZPageData, EverythingAsCodeState> = {
     );
 
     if (status.Processing == EaCStatusProcessingTypes.COMPLETE) {
-      return redirectRequest("/dashboard");
+      return redirectRequest("/dashboard", false, false);
     } else {
       return redirectRequest(
         `/dashboard?error=${
@@ -151,6 +156,8 @@ export const handler: Handlers<CALZPageData, EverythingAsCodeState> = {
             status.Messages["Error"] as string,
           )
         }&commitId=${commitResp.CommitID}`,
+        false,
+        false,
       );
     }
   },
