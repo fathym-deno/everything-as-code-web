@@ -1,0 +1,75 @@
+{
+  "lock": false,
+  "tasks": {
+    "build": "deno task build:fmt && deno task build:lint && deno task build:dev",
+    "build:dev": "deno run -A --unstable-kv dev.build.ts build",
+    "build:fmt": "deno fmt",
+    "build:lint": "deno lint",
+    "build:tailwind": "deno run -A --unstable-kv tailwind.config.ts build",
+    "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
+    "deploy": "deno task build && deno task test && ftm git",
+    "pkg": "npx rimraf _fresh && ftm git \"no fresh\"",
+    "preview": "deno run -A --unstable-kv main.ts",
+    "start": "deno run -A --unstable-kv --watch=static/,routes/,configs/,services/,src/ dev.ts",
+    "start:relay": "ngrok http 8000",
+    "test": "deno test -A --unstable-kv --allow-env .env tests/tests.ts --coverage=cov",
+    "update": "deno run -A -r https://fresh.deno.dev/update ."
+  },
+  "lint": {
+    "rules": {
+      "tags": ["fresh", "recommended"],
+      "exclude": [
+        "no-unused-vars",
+        "ban-unused-ignore",
+        "prefer-const",
+        "ban-types",
+        "require-await"
+      ]
+    }
+  },
+  "exclude": ["**/_fresh/*"],
+  "nodeModulesDir": false,
+  "imports": {
+    "$case": "https://deno.land/x/case@2.1.1/mod.ts",
+    "_@fathym/atomic": "../fathym-atomic/mod.ts",
+    "@fathym/atomic": "https://deno.land/x/fathym_atomic_design_kit@v0.0.82/mod.ts",
+    "_@fathym/atomic/": "../fathym-atomic/",
+    "@fathym/atomic/": "https://deno.land/x/fathym_atomic_design_kit@v0.0.82/",
+    "@fathym/atomic-icons": "https://deno.land/x/fathym_atomic_icons@v0.0.17/mod.ts",
+    "$fathym/atomic-icons": "./build/iconset/icons/_exports.ts",
+    "@fathym/atomic-icons/browser": "https://deno.land/x/fathym_atomic_icons@v0.0.17/browser.ts",
+    "@fathym/common": "https://deno.land/x/fathym_common@v0.0.158/mod.ts",
+    "$fresh/": "https://deno.land/x/fresh@1.6.3/",
+    "$fresh/session": "https://deno.land/x/fresh_session@0.2.2/mod.ts",
+    "__$fresh/oauth": "../../fathym-deno/deno_kv_oauth/mod.ts",
+    "_$fresh/oauth": "https://deno.land/x/deno_kv_oauth@v0.10.0/mod.ts",
+    "$fresh/oauth": "https://raw.githubusercontent.com/fathym-deno/deno_kv_oauth/main/mod.ts",
+    "@handlebars": "npm:handlebars/dist/handlebars.min.js",
+    "__@octokit": "https://esm.sh/@octokit/rest@20.0.2?dts",
+    "@octokit": "https://esm.sh/octokit@3.1.2?dts",
+    "@octokit/core": "https://esm.sh/@octokit/core@v5.0.2",
+    "@octokit/core/types": "https://esm.sh/v135/@octokit/core@v5.0.2/dist-types/types.d.ts",
+    "@octokit/auth-app": "https://esm.sh/@octokit/auth-app@6.0.1",
+    "@octokit/auth-oauth-user": "https://esm.sh/@octokit/auth-oauth-user@4.0.1",
+    "@octokit/auth-token": "https://esm.sh/@octokit/auth-token@4.0.0",
+    "@octokit/openapi-types": "https://esm.sh/@octokit/openapi-types@19.1.0",
+    "@octokit/plugin-paginate-graphql": "https://esm.sh/@octokit/plugin-paginate-graphql@4.0.0",
+    "@octokit/plugin-rest-endpoint-methods": "https://esm.sh/@octokit/plugin-rest-endpoint-methods@10.2.0",
+    "@octokit/types": "https://esm.sh/@octokit/types",
+    "preact": "https://esm.sh/preact@10.19.2",
+    "preact/": "https://esm.sh/preact@10.19.2/",
+    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.3.1",
+    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.1",
+    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.0",
+    "@sodium": "https://deno.land/x/sodium@0.2.0/basic.ts",
+    "$std/": "https://deno.land/std@0.216.0/",
+    "tailwindcss": "npm:tailwindcss@3.3.5",
+    "tailwindcss/": "npm:/tailwindcss@3.3.5/",
+    "tailwindcss/plugin": "npm:/tailwindcss@3.3.5/plugin.js"
+  },
+  "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
+  "unusedImports": {
+    "__@fathym/msal": "../../fathym-deno/msal/mod.ts",
+    "@fathym/msal": "https://deno.land/x/msal@v0.0.24/mod.ts"
+  }
+}
